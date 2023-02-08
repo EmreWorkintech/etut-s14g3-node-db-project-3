@@ -1,5 +1,6 @@
 /*
-  Eğer `scheme_id` veritabanında yoksa:
+  Eğer `scheme_id` veritabanında yoksa 
+  aşağıdaki hata mesajını dönsün:
 
   durum 404
   {
@@ -11,7 +12,10 @@ const checkSchemeId = (req, res, next) => {
 }
 
 /*
-  Eğer `scheme_name` yoksa, boş string ya da string değil:
+  Eğer `scheme_name` yoksa veya 
+        boş string ise veya
+        string değil ise
+  aşağıdaki hata mesajını dönsün:
 
   durum 400
   {
@@ -23,8 +27,12 @@ const validateScheme = (req, res, next) => {
 }
 
 /*
-  Eğer `instructions` yoksa, boş string yada string değilse, ya da
-  eğer `step_number` sayı değilse ya da birden küçükse:
+  Eğer `instructions` yoksa veya 
+                      boş string ise veya 
+                      string değilse 
+       `step_number` sayı değilse veya 
+                      birden küçükse
+  aşağıdaki hata mesajını dönsün:
 
   durum 400
   {
