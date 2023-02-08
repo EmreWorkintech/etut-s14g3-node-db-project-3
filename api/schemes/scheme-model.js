@@ -19,14 +19,14 @@ function find() {
     Bu işlevden elde edilen veri kümesini döndürün.
   */
   return db("schemes as sc")
-    .join("steps as st", "sc.scheme_id", "st.scheme_id")
+    .leftJoin("steps as st", "sc.scheme_id", "st.scheme_id")
     .select("sc.scheme_id", "sc.scheme_name")
     .count("st.step_id as number_of_steps")
     .groupBy("sc.scheme_id")
     .orderBy("sc.scheme_id", "asc");
 }
 
-function findById(scheme_id) {
+async function findById(scheme_id) {
   // Egzersiz B
   /*
     1B- Aşağıdaki SQL sorgusunu SQLite Studio'da "data/schemes.db3" ile karşılaştırarak inceleyin:
@@ -92,7 +92,40 @@ function findById(scheme_id) {
         "scheme_name": "Have Fun!",
         "steps": []
       }
+
+      SELECT
+          sc.scheme_name,
+          st.*
+      FROM schemes as sc
+      LEFT JOIN steps as st
+          ON sc.scheme_id = st.scheme_id
+      WHERE sc.scheme_id = 1
+      ORDER BY st.step_number ASC;
   */
+
+  const records = await db("schemes as sc")
+    .leftJoin("steps as st", "sc.scheme_id", "st.scheme_id")
+    .select("sc.scheme_name", "st.*")
+    .where("sc.scheme_id", scheme_id)
+    .orderBy("st.step_number", "asc");
+
+  const result = {
+    scheme_id: records[0].scheme_id,
+    scheme_name: records[0].scheme_name,
+    steps: [],
+  };
+
+  records.forEach((row) => {
+    if (row.step_id) {
+      result.steps.push({
+        step_id: row.step_id,
+        step_number: row.step_number,
+        instructions: row.instructions,
+      });
+    }
+  });
+
+  return result;
 }
 
 function findSteps(scheme_id) {

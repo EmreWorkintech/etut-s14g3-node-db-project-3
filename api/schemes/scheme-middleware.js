@@ -1,7 +1,6 @@
 const db = require("../../data/db-config");
 const schememodel = require("./scheme-model");
 
-
 /*
   Eğer `scheme_id` veritabanında yoksa:
 
@@ -12,20 +11,22 @@ const schememodel = require("./scheme-model");
 */
 const checkSchemeId = async (req, res, next) => {
   try {
-    const presentscheme = await db("schemes").where("scheme_id", req.params.scheme_id).first();
+    const presentscheme = await db("schemes")
+      .where("scheme_id", req.params.scheme_id)
+      .first();
     if (!presentscheme) {
       next({
-        status: 404, message: `scheme_id ${req.params.scheme_id}  id li şema bulunamadı`
-      })
+        status: 404,
+        message: `scheme_id ${req.params.scheme_id} id li şema bulunamadı`,
+      });
     } else {
       req.scheme = presentscheme;
       next();
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-
-}
+};
 
 /*
   Eğer `scheme_name` yoksa, boş string ya da string değil:
@@ -37,21 +38,23 @@ const checkSchemeId = async (req, res, next) => {
 */
 const validateScheme = (req, res, next) => {
   try {
-
     const { scheme_name } = req.body;
-    if (scheme_name === undefined || typeof scheme_name !== "string" || scheme_name.trim() === "") {
+    if (
+      scheme_name === undefined ||
+      typeof scheme_name !== "string" ||
+      scheme_name.trim() === ""
+    ) {
       next({
         status: 400,
-        message: "Geçersiz scheme_name"
-      })
-    }
-    else {
-      next()
+        message: "Geçersiz scheme_name",
+      });
+    } else {
+      next();
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 /*
   Eğer `instructions` yoksa, boş string yada string değilse, ya da
@@ -65,26 +68,32 @@ const validateScheme = (req, res, next) => {
 const validateStep = (req, res, next) => {
   try {
     const { instructions, step_number } = req.body;
-    if (instructions === undefined || typeof instructions !== "string" || instructions.trim() === "") {
+    if (
+      instructions === undefined ||
+      typeof instructions !== "string" ||
+      instructions.trim() === ""
+    ) {
       next({
         status: 400,
-        message: "Hatalı step"
-      })
-    }
-    else if
-      (typeof step_number !== "number" || isNaN(step_number) || step_number < 1) {
+        message: "Hatalı step",
+      });
+    } else if (
+      typeof step_number !== "number" ||
+      isNaN(step_number) ||
+      step_number < 1
+    ) {
       next({
         status: 400,
-        message: "Hatalı step"
-      })
+        message: "Hatalı step",
+      });
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 module.exports = {
   checkSchemeId,
   validateScheme,
   validateStep,
-}
+};
