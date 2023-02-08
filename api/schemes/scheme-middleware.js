@@ -86,6 +86,8 @@ const validateStep = (req, res, next) => {
         status: 400,
         message: "Hatalı step",
       });
+    } else {
+      next()
     }
   } catch (error) {
     next(error);
